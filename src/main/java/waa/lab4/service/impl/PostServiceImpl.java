@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import waa.lab4.domain.entity.Post;
 import waa.lab4.domain.dto.CreatePostDto;
 import waa.lab4.domain.dto.PostDto;
-import waa.lab4.domain.entity.Users;
+import waa.lab4.domain.entity.User;
 import waa.lab4.repository.PostRepository;
 
 import java.util.List;
@@ -44,9 +44,9 @@ public class PostServiceImpl implements PostService {
 
     public void savePost(CreatePostDto createPostDto, long id) {
         Post post = modelMapper.map(createPostDto, Post.class);
-        Users user = userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found")); // Throw an exception if user not found
-        post.setUsers(user);
+        post.setUser(user);
         postRepository.save(post);
     }
 

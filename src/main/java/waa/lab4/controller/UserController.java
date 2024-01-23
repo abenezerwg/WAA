@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import waa.lab4.domain.CustomError;
 import waa.lab4.domain.entity.Post;
-import waa.lab4.domain.entity.Users;
+import waa.lab4.domain.entity.User;
 import waa.lab4.domain.dto.UserDto;
 import waa.lab4.service.UserService;
 
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable Integer id) throws CustomError {
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) throws CustomError {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
     @GetMapping("/{id}/posts")

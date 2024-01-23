@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import waa.lab4.Aspects.ExecutionTime;
 import waa.lab4.domain.dto.UserDto;
 import waa.lab4.domain.entity.Post;
-import waa.lab4.domain.entity.Users;
+import waa.lab4.domain.entity.User;
 import waa.lab4.repository.PostRepository;
 import waa.lab4.repository.UserRepository;
 import waa.lab4.service.UserService;
@@ -27,20 +27,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(UserDto userDto) {
-       Users users = new Users();
-       users.setName(userDto.getName());
-       userRepository.save(users);
+       User user = new User();
+       user.setName(userDto.getName());
+       userRepository.save(user);
     }
 
     @Override
     @ExecutionTime
-    public Users getUserById(long id) {
+    public User getUserById(long id) {
        return userRepository.findById(id).orElse(null);
 
     }
     @Override
     public List<UserDto> getAllUsers() {
-        List<Users> users = userRepository.findAll();
+        List<User> users = userRepository.findAll();
         return users.stream()
                 .map(user -> new UserDto(user.getId(), user.getName()))
                 .collect(Collectors.toList());
@@ -48,12 +48,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Post> getAllPostsByUserId(long id) {
-        Optional<Users> user = userRepository.findById(id);
-        return user.map(Users::getPosts).orElse(null);
+        Optional<User> user = userRepository.findById(id);
+        return user.map(User::getPosts).orElse(null);
     }
 
     @Override
-    public List<Users> getAllUsersWithMoreThanNPost(long n) {
+    public List<User> getAllUsersWithMoreThanNPost(long n) {
         return null;
     }
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<Users> getAllUsersWithMoreThanOnePost() {
+    public List<User> getAllUsersWithMoreThanOnePost() {
         return userRepository.getAllUsersWithMoreThanOnePost();
     }
 }

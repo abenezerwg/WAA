@@ -1,8 +1,12 @@
 package waa.lab4.util;
 
 import io.jsonwebtoken.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import waa.lab4.domain.entity.User;
 
 import java.util.Date;
 
@@ -11,7 +15,17 @@ public class JwtTokenProvider {
 
     private final String jwtSecret = "yourSecret";
     private final long jwtExpirationInMs = 3600000; // 1 hour
+    private final UserDetailsService userDetailsService;
 
+    public JwtTokenProvider(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    public Authentication getAuthentication(String token) {
+        Long userId = getUserIdFromJWT(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
     public String generateToken(Authentication authentication) {
         User userPrincipal = (User) authentication.getPrincipal();
 
@@ -29,6 +43,7 @@ public class JwtTokenProvider {
     public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -37,7 +52,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
             // Invalid JWT signature
